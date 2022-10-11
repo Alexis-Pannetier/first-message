@@ -39,21 +39,17 @@ function saveNewAds() {
   chrome.storage.sync.get(["ADS_LINK"], function (items) {
     if (DEBUG) {
       newAds = items.ADS_LINK.filter((item) => ADS_LINK.includes(item));
-      addLinkToStorage(newAds[0]);
-      openNewTab(newAds[0]);
+      addLinkToStorage(newAds[1]);
+      window.open(newAds[1]);
     } else {
       newAds = ADS_LINK.filter((item) => !items.ADS_LINK.includes(item));
       newAds.forEach((url) => {
         addLinkToStorage(newAds);
-        openNewTab(url);
+        window.open(url);
       });
     }
     chrome.storage.sync.set({ NEW_ADS: newAds });
   });
-}
-
-function openNewTab(url) {
-  window.open(url);
 }
 
 function addLinkToStorage(item) {
@@ -61,6 +57,16 @@ function addLinkToStorage(item) {
     ads_link.ADS_LINK.push(item);
     chrome.storage.sync.set({ ADS_LINK: ads_link.ADS_LINK });
   });
+}
+
+function refreshAds() {
+  getElementWithContent("button", "Rechercher").click(); // Refresh
+  var today = new Date();
+  var hours = ("0" + today.getHours()).slice(-2);
+  var minutes = ("0" + today.getMinutes()).slice(-2);
+  var seconds = ("0" + today.getSeconds()).slice(-2);
+  var time = hours + ":" + minutes + ":" + seconds;
+  console.log("First Message | refresh : ", time);
 }
 
 // #endregion
@@ -87,8 +93,8 @@ function goToSendPage() {
         const profil = document.getElementsByClassName(
           "styles_profilePicture__dR1KQ"
         )[0]?.href;
-        chrome.storage.sync.get(["NEW_PROFIL"], function (item) {
-          const new_profile = item.NEW_PROFIL.push(profil);
+        chrome.storage.sync.get(["NEW_PROFIL"], function (data) {
+          const new_profile = data.NEW_PROFIL.push(profil);
           chrome.storage.sync.set({ NEW_PROFIL: new_profile });
         });
 
@@ -105,31 +111,34 @@ function goToSendPage() {
 
 // #region MESSAGE_PAGE
 function sendMessage() {
-  timer = setInterval(function () {
-    chrome.storage.sync.get(["TEXT"], function (data) {
-      const TEXTAREA_MESSAGE = document.getElementsByTagName("textarea")[0];
+  chrome.storage.sync.get(["NEW_PROFIL"], function (data) {
+    const profil = document.getElementsByClassName("styles_owner__PTlDd")[0]
+      .children?.href;
+    const new_profile = data.NEW_PROFIL.filter((item) => item != profil);
+    chrome.storage.sync.set({ NEW_PROFIL: new_profile });
+  });
+
+  chrome.storage.sync.get(["TEXT"], function (data) {
+    delay(1000).then(() => {
       if (data.TEXT && data.TEXT !== undefined && data.TEXT !== "") {
-        TEXTAREA_MESSAGE.value = data.TEXT;
+        document.getElementsByTagName("textarea")[0].value = data.TEXT;
       }
-      const profil = document.getElementsByClassName("styles_owner__PTlDd")[0]
-        .children?.href;
-      chrome.storage.sync.get(["NEW_PROFIL"], function (item) {
-        const new_profile = item.NEW_PROFIL.filter((item) => item != profil);
-        chrome.storage.sync.set({ NEW_PROFIL: new_profile });
-      });
-      !DEBUG && getElementWithContent("button", "Envoyer")?.click();
     });
-    clearTimeout(timer);
-    delay(4000).then(() => close());
-  }, 1000);
+  });
+
+  chrome.storage.sync.get(["RUN"], function (data) {
+    if (data.RUN) {
+      delay(1500).then(
+        () => !DEBUG && getElementWithContent("button", "Envoyer")?.click()
+      );
+    }
+  });
+  delay(5000).then(() => close());
 }
 // #endregion
 
 // #region INIT
 function init() {
-  window.addEventListener("beforeunload", function (e) {
-    chrome.storage.sync.set({ RUN: false }); // STOP run when closing the browser
-  });
   pageLoaded.then(() => {
     goToSendPage(); // If on Ad page
   });

@@ -6,7 +6,7 @@
 
 </div>
 
-<p>First Message is a chrome extension, used to send automatic messsage on new item with specific research</p>
+<p>First Message is a chrome extension, used to send automatic message for each new item with specific research</p>
 
 Available on :
 
@@ -16,7 +16,7 @@ Available on :
 
 Go to **chrome://extensions/**
 
-Click on **Load unpacked** and select **First** folder
+Click on **Load unpacked** and select **First Message** folder
 
 ## 📊 Usage
 

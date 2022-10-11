@@ -57,7 +57,7 @@ const start = function (SECONDS) {
       if (loop < SECONDS_RANDOM) {
         switch (loop) {
           case 0:
-            getElementWithContent("button", "Rechercher").click(); // Refresh
+            refreshAds();
             break;
           case 1:
             saveNewAds(); // Open news ads

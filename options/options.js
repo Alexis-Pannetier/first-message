@@ -6,7 +6,6 @@ TEXT.addEventListener("keyup", async () => {
 
 function init() {
   chrome.storage.sync.get(["TEXT"], function (data) {
-    console.log("option-TEXT", data);
     TEXT.value = data?.TEXT;
   });
 }
