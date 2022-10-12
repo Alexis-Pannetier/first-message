@@ -1,4 +1,4 @@
-const DEBUG = true;
+const DEBUG = false;
 const CURRENT_URL = window.location.href;
 var timer = 0;
 
