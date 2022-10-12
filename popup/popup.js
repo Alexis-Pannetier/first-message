@@ -4,7 +4,6 @@ const BTN_OPTION = document.getElementById("btn-option");
 const SPAN_STATUS = document.getElementById("span_status");
 const IMG_SPINNER = document.getElementById("img_spinner");
 const SECONDS = [10, 30]; // range : min-max
-var timer = 0;
 
 function setRunOn() {
   chrome.storage.sync.set({ RUN: true });
@@ -12,6 +11,7 @@ function setRunOn() {
   BTN_START.classList.add("d-none");
   BTN_STOP.classList.remove("d-none");
   IMG_SPINNER.classList.remove("d-none");
+  chrome.action.setBadgeText({ text: "ON" });
 }
 
 function setRunOff() {
@@ -20,6 +20,7 @@ function setRunOff() {
   BTN_START.classList.remove("d-none");
   BTN_STOP.classList.add("d-none");
   IMG_SPINNER.classList.add("d-none");
+  chrome.action.setBadgeText({ text: "" });
 }
 
 function init() {
@@ -30,7 +31,6 @@ function init() {
 
 init();
 
-// #region START
 BTN_START.addEventListener("click", async () => {
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
@@ -43,40 +43,9 @@ BTN_START.addEventListener("click", async () => {
 });
 
 const start = function (SECONDS) {
-  const LINKS = getAdsLink(getAds());
-
-  // Save old ads
-  chrome.storage.sync.set({ ADS_LINK: LINKS });
-
-  var loop = 0;
-  var SECONDS_RANDOM = random_second(SECONDS);
-
-  timer = setInterval(function () {
-    chrome.storage.sync.get(["RUN"], function (data) {
-      !data.RUN && clearTimeout(timer); // STOP if RUN is set to false by another TAB
-      if (loop < SECONDS_RANDOM) {
-        switch (loop) {
-          case 0:
-            refreshAds();
-            break;
-          case 1:
-            saveNewAds(); // Open news ads
-            break;
-          default:
-            // clearTimeout(timer); // only for DEBUG
-            break;
-        }
-        loop++;
-      } else {
-        loop = 0;
-        SECONDS_RANDOM = random_second(SECONDS);
-      }
-    });
-  }, 1000);
+  start(SECONDS);
 };
-// #endregion
 
-// #region STOP
 BTN_STOP.addEventListener("click", async () => {
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
@@ -88,12 +57,9 @@ BTN_STOP.addEventListener("click", async () => {
 });
 
 const stop = function () {
-  timer && clearTimeout(timer);
+  stop();
 };
-// #endregion
 
-// #region OPTION
 BTN_OPTION.addEventListener("click", async () => {
   chrome.runtime.openOptionsPage();
 });
-// #endregion
