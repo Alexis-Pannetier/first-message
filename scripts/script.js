@@ -1,7 +1,22 @@
 const CURRENT_URL = window.location.href;
 const DEBUG = false;
 
-function logTime(data) {
+// RECEIVER
+chrome.runtime.onMessage.addListener(function (request) {
+  console.log(request.msg);
+  switch (request.msg) {
+    case "first-refresh":
+      firstRefreshAds();
+      break;
+    case "refresh":
+      refreshAds();
+      break;
+    default:
+      break;
+  }
+});
+
+function logTime(data = null) {
   var today = new Date();
   var hours = ("0" + today.getHours()).slice(-2);
   var minutes = ("0" + today.getMinutes()).slice(-2);
@@ -49,7 +64,7 @@ function firstRefreshAds() {
 
 function refreshAds() {
   logTime("Refresh");
-  getElementWithContent("button", "Rechercher").click(); // Refresh
+  getElementWithContent("button", "Rechercher")?.click(); // Refresh
   delay(1000).then(() => {
     saveNewAds();
   });

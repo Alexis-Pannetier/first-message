@@ -58,6 +58,10 @@ textarea {
     rgb(26 26 26 / 12%) 0px 4px 8px 0px;
 }
 
+.section {
+  margin: 1rem 0;
+}
+
 .w-100 {
   width: 100%;
 }

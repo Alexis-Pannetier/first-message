@@ -36,11 +36,26 @@ function init() {
 
 init();
 
+function isSearchURL(url) {
+  const searchURL = ["www.leboncoin.fr/recherche"];
+  let result = false;
+  searchURL.forEach((element) => {
+    if (url.includes(element)) {
+      result = true;
+    }
+  });
+  return result;
+}
+
 BTN_START.addEventListener("click", async () => {
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  chrome.storage.sync.set({ TAB: tab });
-  chrome.runtime.sendMessage({ msg: "start" }); // to background.js
-  setRunOn();
+  if (isSearchURL(tab.url)) {
+    chrome.storage.sync.set({ TAB: tab });
+    chrome.runtime.sendMessage({ msg: "start" }); // to background.js
+    setRunOn();
+  } else {
+    SPAN_STATUS.innerText = "Not valid url";
+  }
 });
 
 BTN_STOP.addEventListener("click", async () => {
