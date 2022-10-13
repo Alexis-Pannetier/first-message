@@ -36,14 +36,6 @@ textarea {
   resize: vertical;
 }
 
-.status {
-  font-weight: bold;
-}
-
-.status * {
-  margin: 0 0.25rem;
-}
-
 .card {
   display: flex;
   flex-direction: column;
@@ -94,10 +86,13 @@ button img {
   margin: 0 0.25rem;
 }
 
-.status {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.bold {
+  font-weight: bold;
+}
+
+.status,
+.tab {
+  margin: 0.5rem 0;
 }
 
 #img_spinner {

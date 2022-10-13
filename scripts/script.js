@@ -1,13 +1,17 @@
-const DEBUG = false;
 const CURRENT_URL = window.location.href;
-var timer = 0;
+const DEBUG = false;
+
+function logTime(data) {
+  var today = new Date();
+  var hours = ("0" + today.getHours()).slice(-2);
+  var minutes = ("0" + today.getMinutes()).slice(-2);
+  var seconds = ("0" + today.getSeconds()).slice(-2);
+  var time = hours + ":" + minutes + ":" + seconds;
+  console.log("First Message | " + data + " : ", time);
+}
 
 function delay(time) {
   return new Promise((resolve) => setTimeout(resolve, time));
-}
-
-function random_second(RANGE) {
-  return Math.floor(Math.random() * (RANGE[1] - RANGE[0] + 1) + RANGE[0]); // random between 2 values
 }
 
 function getElementWithContent(tagName, content, caseSensitive = false) {
@@ -25,52 +29,30 @@ function getElementWithContent(tagName, content, caseSensitive = false) {
   return found;
 }
 
-function start(SECONDS) {
-  const LINKS = getAdsLink(getAds());
+const pageLoaded = new Promise((resolve) => {
+  let stateCheck = setInterval(() => {
+    if (document.readyState === "complete") {
+      clearInterval(stateCheck);
+      resolve();
+    }
+  }, 100);
+});
 
+function firstRefreshAds() {
+  const LINKS = getAdsLink(getAds());
+  DEBUG && LINKS.shift(); // DEBUG : Set first item like new ads
   // Save old ads
   chrome.storage.sync.set({ ADS_LINK: LINKS });
 
-  var loop = 0;
-  var SECONDS_RANDOM = random_second(SECONDS);
-
-  // Loop
-  timer = setInterval(function () {
-    chrome.storage.sync.get(["RUN"], function (data) {
-      !data.RUN && clearTimeout(timer); // STOP if RUN is set to false by another TAB
-      if (loop < SECONDS_RANDOM) {
-        switch (loop) {
-          case 0:
-            refreshAds();
-            break;
-          case 1:
-            saveNewAds(); // Open news ads
-            break;
-          default:
-            // clearTimeout(timer); // only for DEBUG
-            break;
-        }
-        loop++;
-      } else {
-        loop = 0;
-        SECONDS_RANDOM = random_second(SECONDS);
-      }
-    });
-  }, 1000);
-}
-
-function stop() {
-  timer && clearTimeout(timer);
+  refreshAds();
 }
 
 function refreshAds() {
+  logTime("Refresh");
   getElementWithContent("button", "Rechercher").click(); // Refresh
-  var today = new Date();
-  var hours = ("0" + today.getHours()).slice(-2);
-  var minutes = ("0" + today.getMinutes()).slice(-2);
-  var seconds = ("0" + today.getSeconds()).slice(-2);
-  var time = hours + ":" + minutes + ":" + seconds;
-  console.log("First Message | refresh : ", time);
+  delay(1000).then(() => {
+    saveNewAds();
+  });
 }
 
 function getAds() {
@@ -89,27 +71,16 @@ function getAdsLink(ads) {
 }
 
 function saveNewAds() {
-  ADS_LINK = getAdsLink(getAds());
+  const ADS_LINK = getAdsLink(getAds());
+
   var newAds = [];
   chrome.storage.sync.get(["ADS_LINK"], function (items) {
-    if (DEBUG) {
-      addLinkToStorage(ADS_LINK[1]);
-      window.open(ADS_LINK[1]);
-    } else {
-      newAds = ADS_LINK.filter((item) => !items.ADS_LINK.includes(item));
-      newAds.forEach((url) => {
-        addLinkToStorage(newAds);
-        window.open(url);
-      });
-    }
+    newAds = ADS_LINK.filter((item) => !items.ADS_LINK.includes(item));
+    newAds.forEach((url) => {
+      window.open(url);
+    });
     chrome.storage.sync.set({ NEW_ADS: newAds });
-  });
-}
-
-function addLinkToStorage(item) {
-  chrome.storage.sync.get(["NEW_ADS"], function (data) {
-    data.NEW_ADS.push(item);
-    chrome.storage.sync.set({ NEW_ADS: data.NEW_ADS });
+    chrome.storage.sync.set({ ADS_LINK: ADS_LINK });
   });
 }
 
@@ -159,6 +130,7 @@ function sendMessage() {
         delay(500).then(() => {
           var BTN_SEND = getElementWithContent("button", "Envoyer");
           if (!DEBUG) {
+            // DEBUG : Don't click and close
             BTN_SEND?.click();
             delay(3500).then(() => close());
           }
@@ -176,14 +148,5 @@ function init() {
     });
   }
 }
-
-const pageLoaded = new Promise((resolve) => {
-  let stateCheck = setInterval(() => {
-    if (document.readyState === "complete") {
-      clearInterval(stateCheck);
-      resolve();
-    }
-  }, 100);
-});
 
 init();
