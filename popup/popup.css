@@ -1,6 +1,8 @@
 :root {
-  --primary: #ff6e14;
-  --primary-hover: #c0562a;
+  --primary: #f3b51b;
+  --primary-hover: #f2a700;
+  --secondary: #292a2c;
+  --dark: #18181b;
   --white: rgb(255, 255, 255);
 }
 
@@ -10,32 +12,46 @@ body {
   width: 100%;
   margin: 0;
   padding: 0;
+  color: var(--white);
+  background-color: var(--secondary);
 }
 
 * {
   box-sizing: border-box;
-  font-family: "Open Sans", sans-serif, Arial;
+  font-family: "Roboto", "Open Sans", sans-serif, Arial;
 }
 
-ul {
-  margin: 0;
-  list-style-type: none;
-  padding: 0;
+textarea {
+  max-width: 250px;
+  resize: vertical;
+  border-radius: 0.25rem;
+  background-color: var(--secondary);
+  color: var(--white);
 }
 
-li {
-  margin: 0.5rem 0;
+input {
+  background-color: var(--secondary);
+  color: var(--white);
+}
+
+/* COMMUN */
+.bold {
+  font-weight: bold;
+}
+
+.w-100 {
+  width: 100%;
 }
 
 .d-none {
   display: none;
 }
 
-textarea {
-  max-width: 300px;
-  resize: vertical;
+.ml-1 {
+  margin-left: 1rem;
 }
 
+/* LAYOUT */
 .card {
   display: flex;
   flex-direction: column;
@@ -43,8 +59,25 @@ textarea {
   padding: 0.5rem 1rem;
 }
 
-.w-100 {
-  width: 100%;
+.field {
+  margin: 0.5rem 0;
+  display: flex;
+  align-items: center;
+}
+
+.field label {
+  font-weight: bold;
+  min-width: 60px;
+}
+
+#seconds {
+  max-width: 64px;
+}
+
+/* BUTTON */
+#btn-container {
+  display: flex;
+  justify-content: center;
 }
 
 button {
@@ -68,13 +101,6 @@ button:hover:enabled {
 
 button:disabled {
   cursor: not-allowed;
-  background-color: var(--primary-hover);
-}
-
-#btn-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .btn-primary {
@@ -86,17 +112,10 @@ button img {
   margin: 0 0.25rem;
 }
 
-.bold {
-  font-weight: bold;
-}
-
-.status,
-.tab {
-  margin: 0.5rem 0;
-}
-
+/* MISC */
 #img_spinner {
   animation: spin 1.2s linear infinite;
+  margin-left: 0.5rem;
 }
 
 @keyframes spin {

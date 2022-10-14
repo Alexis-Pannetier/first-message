@@ -6,30 +6,21 @@
   </head>
   <body>
     <div class="card">
-      <button id="btn-option" class="btn-primary">
-        <img
-          src="../icons/gear.svg"
-          alt="gear tool icon"
-          height="18px"
-          width="18px"
-        />
-        Options
-      </button>
-
-      <div class="status">
-        <span class="bold">Status : </span>
-        <span id="span_status">...</span>
-        <img
-          id="img_spinner"
-          src="../icons/circle-notch.svg"
-          alt="spinner icon"
-          height="12px"
-          width="12px"
-        />
+      <div class="field">
+        <label for="seconds">Message : </label>
+        <textarea id="text" type="text" rows="4" cols="50"></textarea>
       </div>
-      <div class="tab">
-        <span class="bold">Onglet :</span>
-        <span id="span_tab"></span>
+
+      <div class="field">
+        <label for="seconds">Wait : </label>
+        <input
+          type="number"
+          placeholder="15"
+          id="seconds"
+          name="seconds"
+          min="10"
+        />
+        <span class="ml-1">seconds</span>
       </div>
 
       <div id="btn-container">
@@ -50,6 +41,23 @@
             width="18px"
           />Stop<span id="span_seconds"></span>
         </button>
+      </div>
+
+      <div class="field">
+        <label>Status : </label>
+        <span id="span_status">...</span>
+        <img
+          id="img_spinner"
+          src="../icons/circle-notch.svg"
+          alt="spinner icon"
+          height="12px"
+          width="12px"
+        />
+      </div>
+
+      <div class="field">
+        <label>Tab :</label>
+        <span id="span_tab"></span>
       </div>
     </div>
   </body>

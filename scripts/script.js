@@ -3,7 +3,6 @@ const DEBUG = false;
 
 // RECEIVER
 chrome.runtime.onMessage.addListener(function (request) {
-  console.log(request.msg);
   switch (request.msg) {
     case "first-refresh":
       firstRefreshAds();
@@ -73,9 +72,12 @@ function refreshAds() {
 function getAds() {
   const CLASSNAME_ADS = "fKGgoF";
   const ADS = document.getElementsByClassName(CLASSNAME_ADS);
-  return Array.from(ADS[0]?.children).filter((item) => {
-    return !item.id && item.children.length; // Remove commercial ad + empty
-  });
+  return (
+    ADS.length &&
+    Array.from(ADS[0]?.children).filter((item) => {
+      return !item.id && item.children.length; // Remove commercial ad + empty
+    })
+  );
 }
 
 function getAdsLink(ads) {
@@ -165,3 +167,9 @@ function init() {
 }
 
 init();
+
+// window.addEventListener("beforeunload", function (e) {
+//   chrome.storage.sync.set({ RUN: false });
+//   chrome.storage.sync.set({ TAB: null });
+//   chrome.runtime.sendMessage({ msg: "stop" }); // to background.js
+// });
