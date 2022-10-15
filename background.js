@@ -13,6 +13,9 @@ function messageBackground(response) {
     case "open-url":
       openUrl(response?.url);
       break;
+    case "close-tab":
+      closeTab(response?.tab);
+      break;
     default:
       break;
   }
@@ -30,7 +33,7 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   if (changeInfo.status == "complete") {
     if (new_ad.includes(tabId)) {
-      chrome.tabs.sendMessage(tabId, { msg: "go-to-send-page" });
+      chrome.tabs.sendMessage(tabId, { msg: "go-to-send-page", tab: tab });
       new_ad = new_ad.filter((item) => item != tabId);
     }
   }
@@ -76,6 +79,10 @@ function openUrl(url) {
   chrome.tabs.create({ url: url }, (tab) => {
     new_ad.push(tab.id);
   });
+}
+
+function closeTab(tab) {
+  chrome.tabs.remove(tab?.id);
 }
 
 chrome.tabs.onRemoved.addListener(function (tabid, removed) {

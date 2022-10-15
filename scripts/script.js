@@ -10,7 +10,7 @@ chrome.runtime.onMessage.addListener(function (request) {
       refreshAds();
       break;
     case "go-to-send-page":
-      goToSendPage();
+      goToSendPage(request?.tab);
       break;
     default:
       break;
@@ -98,7 +98,7 @@ function saveNewAds() {
   });
 }
 
-function goToSendPage() {
+function goToSendPage(tab) {
   // Save profil url
   var BTN_SEND_MESSAGE = getElementWithContent("button", "Envoyer un message"); // large width device
   if (!BTN_SEND_MESSAGE) {
@@ -108,10 +108,10 @@ function goToSendPage() {
     }
   }
   BTN_SEND_MESSAGE?.click();
-  sendMessage();
+  sendMessage(tab);
 }
 
-function sendMessage() {
+function sendMessage(tab) {
   chrome.storage.sync.get(["RUN"], function (data) {
     if (data.RUN) {
       delay(1000).then(() => {
@@ -126,8 +126,10 @@ function sendMessage() {
           if (!DEBUG) {
             // DEBUG : Don't click and close
             BTN_SEND?.click();
-            delay(3500).then(() => close());
           }
+          delay(3500).then(() =>
+            chrome.runtime.sendMessage({ msg: "close-tab", tab: tab })
+          );
         });
       });
     }
