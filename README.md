@@ -8,7 +8,6 @@ Available on :
 
 <div align="center">
 
-![Popup](./screenshots/extension-icon.png)
 ![Popup](./screenshots/popup.png)
 
 </div>
@@ -31,7 +30,7 @@ Click on **Load unpacked** and select **First Message** folder
 **Message** : That is default message sended on a new item
 If you keep message empty, that will send the default website message
 
-**Wait** : That is is the time between each refreh
+**Wait** : That is is the time between each refreh, this value need to be randomized between a range (min and max)
 Don't use tiny value, because you will refresh too many page in small amount of time, then website can ask you if you are bot
 
 ## 📜 Log

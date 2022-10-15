@@ -1,9 +1,10 @@
 const BTN_START = document.getElementById("btn-start");
 const BTN_STOP = document.getElementById("btn-end");
-const IMG_SPINNER = document.getElementById("img_spinner");
-const SECONDS = document.getElementById("seconds");
-const SPAN_STATUS = document.getElementById("span_status");
-const SPAN_TAB = document.getElementById("span_tab");
+const IMG_SPINNER = document.getElementById("img-spinner");
+const SECONDS_MIN = document.getElementById("seconds-min");
+const SECONDS_MAX = document.getElementById("seconds-max");
+const SPAN_STATUS = document.getElementById("span-status");
+const SPAN_TAB = document.getElementById("span-tab");
 const TEXT = document.getElementById("text");
 
 function setRunOn() {
@@ -29,7 +30,7 @@ function setRunOff() {
 }
 
 function isSearchURL(url) {
-  const searchURL = ["www.leboncoin.fr/recherche"];
+  const searchURL = ["www.leboncoin.fr/recherche"]; // Valid url list
   let result = false;
   searchURL.forEach((element) => {
     if (url.includes(element)) {
@@ -55,11 +56,43 @@ BTN_STOP.addEventListener("click", async () => {
   setRunOff();
 });
 
-SECONDS.addEventListener("keyup", async () => {
-  chrome.storage.sync.set({ SECONDS: SECONDS.value });
+SECONDS_MIN.addEventListener("keyup", async () => {
+  chrome.storage.sync.get(["SECONDS"], function (data) {
+    if (SECONDS_MIN.value < data.SECONDS[1]) {
+      chrome.storage.sync.set({
+        SECONDS: [SECONDS_MIN.value, data.SECONDS[1]],
+      });
+      setSecondsMinMax();
+      SECONDS_MIN.classList.remove("error");
+    } else {
+      SECONDS_MIN.classList.add("error");
+    }
+  });
 });
 
+SECONDS_MAX.addEventListener("keyup", async () => {
+  chrome.storage.sync.get(["SECONDS"], function (data) {
+    if (data.SECONDS[0] < SECONDS_MAX.value) {
+      chrome.storage.sync.set({
+        SECONDS: [data.SECONDS[0], SECONDS_MAX.value],
+      });
+      setSecondsMinMax();
+      SECONDS_MAX.classList.remove("error");
+    } else {
+      SECONDS_MAX.classList.add("error");
+    }
+  });
+});
+
+function setSecondsMinMax() {
+  chrome.storage.sync.get(["SECONDS"], function (data) {
+    SECONDS_MAX.setAttribute("min", data.SECONDS[0]);
+    SECONDS_MIN.setAttribute("max", data.SECONDS[1]);
+  });
+}
+
 TEXT.addEventListener("keyup", async () => {
+  SECONDS_MIN.setAttribute("max", data.SECONDS[1]);
   chrome.storage.sync.set({ TEXT: TEXT.value });
 });
 
@@ -71,8 +104,10 @@ function init() {
     TEXT.value = data?.TEXT;
   });
   chrome.storage.sync.get(["SECONDS"], function (data) {
-    SECONDS.value = data?.SECONDS;
+    SECONDS_MIN.value = data?.SECONDS[0];
+    SECONDS_MAX.value = data?.SECONDS[1];
   });
+  setSecondsMinMax();
 }
 
 init();

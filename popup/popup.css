@@ -22,7 +22,7 @@ body {
 }
 
 textarea {
-  max-width: 250px;
+  max-width: 300px;
   resize: vertical;
   border-radius: 0.25rem;
   background-color: var(--secondary);
@@ -47,10 +47,6 @@ input {
   display: none;
 }
 
-.ml-1 {
-  margin-left: 1rem;
-}
-
 /* LAYOUT */
 .card {
   display: flex;
@@ -71,7 +67,16 @@ input {
 }
 
 #seconds {
+  margin: 0 0.5rem;
+}
+
+#seconds-min,
+#seconds-max {
   max-width: 64px;
+}
+
+.error {
+  border-color: red;
 }
 
 /* BUTTON */
@@ -113,7 +118,7 @@ button img {
 }
 
 /* MISC */
-#img_spinner {
+#img-spinner {
   animation: spin 1.2s linear infinite;
   margin-left: 0.5rem;
 }

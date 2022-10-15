@@ -7,20 +7,31 @@
   <body>
     <div class="card">
       <div class="field">
-        <label for="seconds">Message : </label>
+        <label for="text">Message : </label>
         <textarea id="text" type="text" rows="4" cols="50"></textarea>
       </div>
 
       <div class="field">
-        <label for="seconds">Wait : </label>
-        <input
-          type="number"
-          placeholder="15"
-          id="seconds"
-          name="seconds"
-          min="10"
-        />
-        <span class="ml-1">seconds</span>
+        <label>Wait : </label>
+        <div id="seconds">
+          <label for="seconds-min">Min : </label>
+          <input
+            type="number"
+            placeholder="20"
+            id="seconds-min"
+            name="seconds"
+            min="10"
+          />
+          <label for="seconds-max">Max : </label>
+          <input
+            type="number"
+            placeholder="40"
+            id="seconds-max"
+            name="seconds"
+            min="10"
+          />
+          <span>seconds</span>
+        </div>
       </div>
 
       <div id="btn-container">
@@ -39,15 +50,15 @@
             alt="stop icon"
             height="18px"
             width="18px"
-          />Stop<span id="span_seconds"></span>
+          />Stop<span id="span-seconds"></span>
         </button>
       </div>
 
       <div class="field">
-        <label>Status : </label>
-        <span id="span_status">...</span>
+        <label for="span-status">Status : </label>
+        <span id="span-status">...</span>
         <img
-          id="img_spinner"
+          id="img-spinner"
           src="../icons/circle-notch.svg"
           alt="spinner icon"
           height="12px"
@@ -56,8 +67,8 @@
       </div>
 
       <div class="field">
-        <label>Tab :</label>
-        <span id="span_tab"></span>
+        <label for="span-tab">Tab :</label>
+        <span id="span-tab"></span>
       </div>
     </div>
   </body>
