@@ -7,13 +7,13 @@
   <body>
     <div class="card">
       <div class="field">
-        <label for="text">Message : </label>
-        <textarea id="text" type="text" rows="4" cols="50"></textarea>
+        <label for="text" class="bold">Message : </label>
+        <textarea id="text" type="text" rows="6" cols="50"></textarea>
       </div>
 
       <div class="field">
-        <label>Wait : </label>
-        <div id="seconds">
+        <label class="bold">Wait : </label>
+        <div>
           <label for="seconds-min">Min : </label>
           <input
             type="number"
@@ -22,6 +22,8 @@
             name="seconds"
             min="10"
           />
+        </div>
+        <div>
           <label for="seconds-max">Max : </label>
           <input
             type="number"
@@ -30,7 +32,32 @@
             name="seconds"
             min="10"
           />
-          <span>seconds</span>
+        </div>
+        <span>seconds</span>
+      </div>
+
+      <div class="field">
+        <label class="bold">Options : </label>
+        <div class="center">
+          <input
+            class="checkbox"
+            type="checkbox"
+            id="checkbox-send"
+            name="send"
+            checked
+          />
+          <label for="checkbox-send">Auto send message</label>
+        </div>
+
+        <div class="center">
+          <input
+            class="checkbox"
+            type="checkbox"
+            id="checkbox-close"
+            name="close"
+            checked
+          />
+          <label for="checkbox-close">Auto close tab</label>
         </div>
       </div>
 
@@ -55,7 +82,7 @@
       </div>
 
       <div class="field">
-        <label for="span-status">Status : </label>
+        <label class="bold" for="span-status">Status : </label>
         <span id="span-status">...</span>
         <img
           id="img-spinner"
@@ -67,7 +94,7 @@
       </div>
 
       <div class="field">
-        <label for="span-tab">Tab :</label>
+        <label class="bold" for="span-tab">Tab :</label>
         <span id="span-tab"></span>
       </div>
     </div>

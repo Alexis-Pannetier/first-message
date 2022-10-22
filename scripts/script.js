@@ -91,44 +91,61 @@ function saveNewAds() {
   const ADS_LINK = getAdsLink(getAds());
   chrome.storage.sync.get(["ADS_LINK"], function (data) {
     var newAds = ADS_LINK.filter((item) => !data.ADS_LINK.includes(item));
-    newAds.forEach((url) => {
-      chrome.runtime.sendMessage({ msg: "open-url", url: url }); // to background.js
-    });
+    var i = 0;
+    var interval = setInterval(() => {
+      if (i >= newAds.length) {
+        clearInterval(interval);
+      } else {
+        chrome.runtime.sendMessage({ msg: "open-url", url: newAds[i] }); // to background.js
+        i++;
+      }
+    }, 1000); // time between each new tab
     chrome.storage.sync.set({ ADS_LINK: ADS_LINK });
   });
 }
 
 function goToSendPage(tab) {
-  // Save profil url
   var BTN_SEND_MESSAGE = getElementWithContent("button", "Envoyer un message"); // large width device
   if (!BTN_SEND_MESSAGE) {
     BTN_SEND_MESSAGE = getElementWithContent("button", "message"); // small width device
-    if (!BTN_SEND_MESSAGE) {
-      BTN_SEND_MESSAGE = getElementWithContent("button", "contacter"); // a button contact appear, in case of resizing page
-    }
   }
-  BTN_SEND_MESSAGE?.click();
-  sendMessage(tab);
+  if (!BTN_SEND_MESSAGE) {
+    BTN_SEND_MESSAGE = getElementWithContent("button", "contacter"); // a button contact appear, in case of resizing page
+  }
+
+  if (BTN_SEND_MESSAGE) {
+    // Everything work good
+    BTN_SEND_MESSAGE?.click();
+    sendMessage(tab);
+    // ERROR : If message already send
+  }
 }
 
 function sendMessage(tab) {
   chrome.storage.sync.get(["RUN"], function (data) {
     if (data.RUN) {
-      delay(1000).then(() => {
+      delay(2000).then(() => {
         chrome.storage.sync.get(["TEXT"], function (data) {
           if (data.TEXT && data.TEXT !== undefined && data.TEXT !== "") {
-            document.getElementsByTagName("textarea")[0].value = data.TEXT;
+            const TEXTAREA = document.getElementsByTagName("textarea");
+            if (TEXTAREA) {
+              TEXTAREA[0].value = data.TEXT;
+            }
           }
         });
 
         delay(500).then(() => {
-          var BTN_SEND = getElementWithContent("button", "Envoyer");
-          if (!DEBUG) {
-            // DEBUG : Don't click and close
-            BTN_SEND?.click();
+          const BTN_SEND = getElementWithContent("button", "Envoyer");
+          if (BTN_SEND) {
+            chrome.storage.sync.get(["SEND"], function (data) {
+              data.SEND && BTN_SEND?.click();
+            });
           }
-          delay(3500).then(() =>
-            chrome.runtime.sendMessage({ msg: "close-tab", tab: tab })
+          delay(3000).then(() =>
+            chrome.storage.sync.get(["CLOSE"], function (data) {
+              data.CLOSE &&
+                chrome.runtime.sendMessage({ msg: "close-tab", tab: tab });
+            })
           );
         });
       });
