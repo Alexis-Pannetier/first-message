@@ -3,9 +3,9 @@ var new_ad = [];
 // RECEIVER
 chrome.runtime.onMessage.addListener(messageBackground);
 function messageBackground(response) {
-  switch (response.msg) {
+  switch (response?.action) {
     case "start":
-      send("first-refresh");
+      alarmSend("first-refresh");
       break;
     case "stop":
       stop();
@@ -16,6 +16,9 @@ function messageBackground(response) {
     case "close-tab":
       closeTab(response?.tab);
       break;
+    case "notification":
+      sendNotification(response?.message);
+      break;
     default:
       break;
   }
@@ -25,7 +28,7 @@ function messageBackground(response) {
 chrome.alarms.onAlarm.addListener(function (alarm) {
   if (alarm.name == "RUN") {
     new_ad = [];
-    send("refresh");
+    alarmSend("refresh");
   }
 });
 
@@ -33,7 +36,7 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   if (changeInfo.status == "complete") {
     if (new_ad.includes(tabId)) {
-      chrome.tabs.sendMessage(tabId, { msg: "go-to-send-page", tab: tab });
+      chrome.tabs.sendMessage(tabId, { action: "go-to-send-page", tab: tab });
       new_ad = new_ad.filter((item) => item != tabId);
     }
   }
@@ -55,14 +58,14 @@ function stop() {
   chrome.storage.sync.set({ TAB: null });
 }
 
-function send(message) {
+function alarmSend(action) {
   chrome.storage.sync.get(["TAB"], function (data) {
     chrome.tabs.get(data.TAB.id, function () {
       if (chrome.runtime.lastError) {
         console.log(chrome.runtime.lastError.message);
         stop();
       } else {
-        chrome.tabs.sendMessage(data?.TAB?.id, { msg: message });
+        chrome.tabs.sendMessage(data?.TAB?.id, { action: action });
         startAlarm();
       }
     });
@@ -76,7 +79,7 @@ function random_second(RANGE) {
 }
 
 function openUrl(url) {
-  chrome.tabs.create({ url: url }, (tab) => {
+  chrome.tabs.create({ url: url, active: false }, (tab) => {
     new_ad.push(tab.id);
   });
 }
@@ -84,6 +87,24 @@ function openUrl(url) {
 function closeTab(tab) {
   chrome.tabs.remove(tab?.id);
 }
+
+function sendNotification(message = "", title = "First Message") {
+  chrome.notifications.create("TAB", {
+    iconUrl: "images/first-128.png",
+    title: title,
+    message: message,
+    priority: 2,
+    type: "basic",
+  });
+}
+
+chrome.notifications.onClicked.addListener(function (notifId) {
+  if (notifId == "TAB") {
+    chrome.storage.sync.get(["TAB"], function (data) {
+      chrome.tabs.update(data.TAB.id, { active: true }); // focus tab
+    });
+  }
+});
 
 chrome.tabs.onRemoved.addListener(function (tabid, removed) {
   chrome.storage.sync.get(["TAB"], function (data) {

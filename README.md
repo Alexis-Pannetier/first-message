@@ -6,9 +6,13 @@ Available on :
 
 - [LEBONCOIN](https://www.leboncoin.fr/)
 
+Language :
+
+- French
+
 <div align="center">
 
-![Popup](./screenshots/popup.png)
+![Popup](./screenshots/popup.jpg)
 
 </div>
 
@@ -37,7 +41,12 @@ Don't use tiny value, because you will refresh too many page in small amount of 
 
 Chrome console log each refresh
 
-![Popup](./screenshots/chrome-console-log.png)
+![Popup](./screenshots/chrome-console-log.jpg)
+
+## Notification
+
+In case of something get wrong, extension send notification to catch your attention
+![Notification](./screenshots/notification.jpg)
 
 ## 👤 Author
 

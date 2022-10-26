@@ -46,7 +46,7 @@ BTN_START.addEventListener("click", async () => {
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   if (isSearchURL(tab.url)) {
     chrome.storage.sync.set({ TAB: tab });
-    chrome.runtime.sendMessage({ msg: "start" }); // to background.js
+    chrome.runtime.sendMessage({ action: "start" }); // to background.js
     setRunOn();
   } else {
     SPAN_STATUS.innerText = "Not valid url tab";
@@ -54,7 +54,7 @@ BTN_START.addEventListener("click", async () => {
 });
 
 BTN_STOP.addEventListener("click", async () => {
-  chrome.runtime.sendMessage({ msg: "stop" }); // to background.js
+  chrome.runtime.sendMessage({ action: "stop" }); // to background.js
   setRunOff();
 });
 

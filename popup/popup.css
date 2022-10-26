@@ -7,6 +7,9 @@
 }
 
 body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background: none;
   min-width: 200px;
   width: 100%;
@@ -22,7 +25,6 @@ body {
 }
 
 textarea {
-  max-width: 300px;
   resize: vertical;
   border-radius: 0.25rem;
   background-color: var(--secondary);
@@ -88,6 +90,7 @@ input::-webkit-inner-spin-button {
 
 /* LAYOUT */
 .card {
+  max-width: 400px;
   display: flex;
   flex-direction: column;
   justify-content: center;
