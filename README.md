@@ -46,6 +46,7 @@ Chrome console log each refresh
 ## Notification
 
 In case of something get wrong, extension send notification to catch your attention
+
 ![Notification](./screenshots/notification.jpg)
 
 ## 👤 Author
